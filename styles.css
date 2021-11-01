@@ -1,10 +1,14 @@
+*, *::after, *::before {
+    box-sizing: border-box;
+}
 body {
     margin: 0;
     padding: 0;
     font-family: 'Open Sans', 'Calibri', Arial, Helvetica, sans-serif;
-    box-sizing: border-box;
     background: linear-gradient(116.82deg, #4169E1 0%, #40E0D0 44.2%, rgba(255, 215, 0, 0.62) 71.35%, #FFD700 100%);
-    height: 100vh;
+    background-repeat: no-repeat;
+    background-attachment: fixed;
+    min-height: 100vh;
     overflow: hidden;
     position: relative;
     display: flex;
@@ -14,54 +18,68 @@ body {
 .ellipse {
     position: absolute;
     border-radius: 50%;
+    z-index: -99;
 }
 .ellipse1 {
-    width: 40vw;
-    height: 40vw;
+    width: clamp(130px, 30vw, 300px);
+    height: clamp(130px, 30vw, 300px);
     left: 0;
     bottom: 0;
-    transform: translate(-20%, 20%);
-    background: #C219DD;
+    transform: translate(-50%, 50%);
+    /* background: #C219DD; */
     background: magenta;
 }
 
 .ellipse2 {
-    width: 35vw;
-    height: 35vw;
+    width: clamp(100px, 25vw, 250px);
+    height: clamp(100px, 25vw, 250px);
     right: 0;
     top: 0;
     background: #4169E1;
-    transform: translate(20%, -35%);
+    transform: translate(50%, -50%);
 }
 
 .ellipse3 {
-    width: 25vw;
-    height: 25vw;
+    width: clamp(80px, 20vw, 200px);
+    height: clamp(80px, 20vw, 200px);
     right: 0;
     bottom: 0;
     background: tomato;
-    transform: translate(0%, 25%);
+    transform: translate(10%, 35%);
+}
+
+.ellipse4 {
+    width: clamp(80px, 20vw, 200px);
+    height: clamp(80px, 20vw, 200px);
+    left: 50%;
+    right: 50%;
+    transform: translate(-50%, -30%);
+    background: lawngreen;
 }
 
 .loginModal {
+    position: relative;
     width: 80%;
     max-width: 800px;
-    background: rgba(255, 255, 255, 0.5);
     border: 1px solid rgba(255, 255, 255, 0.6);
-    backdrop-filter: blur(20px);
-    border-radius: 25px;
     display: flex;
-    overflow: hidden;
+    border-radius: 25px;
 }
 .left, .right {
+    background: rgba(255, 255, 255, 0.5);
+    backdrop-filter: blur(20px);
     flex: 100%;
 }
 .left {
+    border-top-left-radius: 25px;
+    border-bottom-left-radius: 25px;
     background: url('Docs/housebg.jpg') center no-repeat;
     background-size: cover;
 }
 
 .right {
+    border-top-right-radius: 25px;
+    border-bottom-right-radius: 25px;
     padding: 1rem 5%;
 }
 h1 {
@@ -80,7 +98,7 @@ h1 {
 }
 .input_with_icon input {
     font-family: 'Open Sans', 'Calibri', Arial, Helvetica, sans-serif;
-    width: 80%;
+    width: 100%;
     padding: .5rem .75rem;
     font-size: 1.05rem;
     padding-left: 2rem;
@@ -118,7 +136,10 @@ button:hover {
     .left {
         display: none;
     }
-    .ellipse1 {
+    .right {
+        border-radius: 25px;
+    }
+    /* .ellipse1 {
         width: 50vh;
         height: 50vh;
     }
@@ -132,5 +153,5 @@ button:hover {
         width: 45vw;
         height: 45vw;
         transform: translate(20%, 5%);
-    }
+    } */
 }
