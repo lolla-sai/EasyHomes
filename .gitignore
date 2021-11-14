@@ -1,0 +1,9 @@
+PHPMailer-master
+.vscode
+vendor
+composer.lock
+composer.json
+test.php
+index-old.php
+connect_db.php
+dbtest.php
