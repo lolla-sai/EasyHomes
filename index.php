@@ -5,7 +5,6 @@
     if(!isset($_SESSION['messages'])) {
         $_SESSION['messages']=array();
     }
-    echo "<br>";
     require './register.php';
 ?>
 <!DOCTYPE html>

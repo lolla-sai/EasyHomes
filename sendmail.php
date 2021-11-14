@@ -30,22 +30,15 @@
         $mail->IsHTML(true);
         $mail->AddAddress($receiver_email_id);
         $mail->SetFrom($sender_email_id, $sender_name);
-        // $mail->Subject = "OTP Verification for Easy Homes";
         $mail->Subject = $subject;
-        // $content = "Hello, Greetings from the EasyHomes Team!<br><br>The OTP for your Registration is: $otp<br><br>Yours, <br>EasyHomes Team<br>";
 
         $mail->MsgHTML($content);
         $result=$mail->Send();
         return $result;
     }
 
-    function exit_own($message, $message_tag, $reload=true, $die=true) {
+    function set_alert($message, $message_tag) {
         $_SESSION['messages'][] = "$message_tag-->$message";
-        if($reload)
-            echo "<script>window.location = window.location.href;</script>";
-        // header('location:reload')
-        // if($die)
-        //     die("");
     }
 ?>
 
