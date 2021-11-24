@@ -128,6 +128,7 @@
                 $username = $_SESSION['logged_name'];
                 $_SESSION['logged_email']=$row['email'];
                 $_SESSION['logged_username']=$row['username'];
+                $_SESSION['logged_dp'] = $row['dp'];
                 set_alert("Welcome $username", "success");
                 header('location:home.php');
             }
