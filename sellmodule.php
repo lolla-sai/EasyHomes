@@ -1,8 +1,10 @@
 <?php
-    session_start();
     function clean_input($input) {
         return htmlspecialchars(stripslashes(trim($input)));
     }
+    
+    session_start();
+
     $conn = mysqli_connect("localhost", "root", "", "easyhomessai", 3306);
     if($conn->connect_error) {
         set_alert("Database Connection Failed", "danger");
@@ -10,6 +12,25 @@
     }
 
     if(isset($_POST['submit'])) {
+        $category = clean_input($_POST['category']);
+        $for = clean_input($_POST['for']);
+        if($category=='house') {
+            $house_no = $_POST['house_no'];
+            $house_plot_no = $_POST['house_plot_no'];
+        }
+        else if($category=='plot') {
+            $plot_no = $_POST['plot_no'];
+        }
+        else if($category=='flat') {
+            $flat_no = $_POST['flat_no'];
+            $flat_name = $_POST['flat_name'];
+        }
+        $location = clean_input($_POST['location']);
+        $description = clean_input($_POST['desc']);
+        $area = clean_input($_POST['area']);
+        $price = clean_input($_POST['price']);
+        $images = array();
+
     // Configure upload directory and allowed file types
         $upload_dir = 'media' . '/' . ($_SESSION['username']??'lolla-sai') . '/';
         $allowed_types = array('jpg', 'png', 'jpeg', 'gif');
@@ -45,6 +66,8 @@
                     
                     if(move_uploaded_file($file_tmpname, $filepath)) {
                         echo "{$file_name} successfully uploaded <br />";
+                        // $images.push($filepath);
+                        array_push($images, $filepath);
                     }
                     else {                    
                         echo "Error uploading {$file_name} <br />";
@@ -62,10 +85,35 @@
             // If no files selected
             echo "No files selected.";
         }
+        $imagesStr = implode(',', $images);
+        $sql = mysqli_query($conn, "INSERT INTO property (location, category, description, images, area, price) VALUES ('$location', '$for', '$description', '$imagesStr', $area, $price)");
+        $last_id = mysqli_insert_id($conn);
+        if(mysqli_error($conn)) {
+            set_alert(mysqli_error($conn), "danger");
+        }
+        if($category=='house') {
+            mysqli_query($conn, "INSERT INTO house (house_no, plot_no, property_id) VALUES ($house_no, $house_plot_no, $last_id)");
+            if(mysqli_error($conn)) {
+                set_alert(mysqli_error($conn), "danger");
+            }
+        }
+        else if($category=='plot') {
+            mysqli_query($conn, "INSERT INTO plot (plot_number, property_id) VALUES ($plot_no, $last_id)");
+            if(mysqli_error($conn)) {
+                set_alert(mysqli_error($conn), "danger");
+            }
+        }
+        else if($category=='flat') {
+            mysqli_query($conn, "INSERT INTO flat (flat_no, building_name, property_id) VALUES ($flat_no, '$flat_name', $last_id)");
+            if(mysqli_error($conn)) {
+                echo mysqli_error($conn);
+                // set_alert(mysqli_error($conn), "danger");
+            }
+        }
     }
-
     endpoint:
 ?>
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -73,31 +121,6 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Sell Property</title>
-
-    <!-- map my india maps -->
-    
-    <script src="https://code.jquery.com/jquery-1.10.1.min.js"></script>
-    <script src="https://apis.mapmyindia.com/advancedmaps/v1/be055f6c-b4a4-4ee6-81f1-89434af03d1d/map_load?v=1.5"></script>
-    <script src="https://apis.mapmyindia.com/advancedmaps/api/54730f18fed5e4a724bfceab0520b63e/map_sdk_plugins"></script>
-    <!-- <script src="https://apis.mapmyindia.com/advancedmaps/api/be055f6c-b4a4-4ee6-81f1-89434af03d1d/map_sdk_plugins"></script> -->
-
-    <!-- map my india styles -->
-    <style>
-        #main{
-            width:80%;
-            height:auto;
-            margin:0 auto;
-            padding:0;
-        }
-        @media screen and (max-width: 768px) {
-            #main{width:100%}
-            #auto{top:56px !important}
-        }
-        #map {
-            width: 100%;
-            height: 550px;    
-        }
-    </style>
 </head>
 <body>
     <h1>Sell/Rent A House</h1>
@@ -164,28 +187,6 @@
     <h1>Show Interested People</h1>
     <h1>Show Visit Requests</h1>
 
-    <div id="main">
-        <div id="map"></div>
-    </div>
-
-    <script>
-        /*Map Initialization*/
-        var map = new MapmyIndia.Map('map', {center: [28.62, 77.09], zoom: 15, search: false, zoomControl: true, location: true,scrollwheel:true, fullscreen: false, traffic: false});
-        /*Search plugin initialization*/
-        var options={
-            map:map,
-            callback:callback_method
-        };
-        var picker=new MapmyIndia.placePicker(options);
-
-        var marker;
-        function callback_method(data) { 
-            let jsondata = JSON.stringify(data);
-            console.log(data.lat, data.lng);
-        }
-
-        window.setTimeout(function(){window.scrollTo(0,0);0},1000);
-    </script>
 
     <script src="toggleCategory.js"></script>
 </body>
