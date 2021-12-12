@@ -5,8 +5,14 @@
     if(!isset($_SESSION['messages'])) {
         $_SESSION['messages']=array();
     }
-    $_SESSION['logged_dp'] = 'media/lolla-sai/dp20211110160144';
-    $_SESSION['logged_username'] = 'Sai Lolla';
+    //$_SESSION['logged_dp'] = 'media/lolla-sai/dp20211110160144';
+    //$_SESSION['logged_username'] = '';
+?>
+<?php
+    if(!empty($_POST['login']))
+    {
+        header('location:index.php');
+    }
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -60,17 +66,32 @@
                     <a class="nav-link" href="#">Link</a>
                     </li>
                 </ul>
-                <div class="dropdown profile">
-                    <div class="d-flex" data-bs-toggle="dropdown">
-                    <img src="<?php echo $_SESSION['logged_dp']; ?>" alt="DP">
-                    <a class="nav-link dropdown-toggle" role="button" id="profileDropdownLink"><?php echo $_SESSION['logged_username']; ?></a>
-                    </div>
-                    <ul class="dropdown-menu dropdown-menu-end">
-                        <li><a class="dropdown-item" href="#">Profile</a></li>
-                        <li><a class="dropdown-item" href="#">My Properties</a></li>
-                        <li><a class="dropdown-item" href="#">Logout</a></li>
-                    </ul>
-                </div>
+                <?php 
+                if(isset($_SESSION['logged_id']))
+                {
+                    ?>
+                        <div class="dropdown profile">
+                            <div class="d-flex" data-bs-toggle="dropdown">
+                            <img src="<?php echo $_SESSION['logged_dp']; ?>" alt="DP">
+                            <a class="nav-link dropdown-toggle" role="button" id="profileDropdownLink"><?php echo $_SESSION['logged_username']; ?></a>
+                            </div>
+                            <ul class="dropdown-menu dropdown-menu-end">
+                                <li><a class="dropdown-item" href="#">Profile</a></li>
+                                <li><a class="dropdown-item" href="#">My Properties</a></li>
+                                <li><a class="dropdown-item" href="logout.php">Logout</a></li>
+                            </ul>
+                        </div>
+                    <?php
+                }
+                else
+                {
+                    ?>
+                    <form action="#" method="POST">
+                        <button type="submit" name="login" value="login">Login</button>
+                    </form>
+                    <?php
+                }
+                ?>
             </div>
         </div>
     </nav>
@@ -79,9 +100,9 @@
         <div class="text-center p-5 rounded landing-pane">
             <h1>What do you want to do today?</h1>
             <div class="d-flex flex-md-row flex-column justify-content-center gap-3 align-items-center mt-5">
-                <a class="btn btn-primary btn-lg">Buy/Take On Rent</a>
+                <a class="btn btn-primary btn-lg" href="buy.php">Buy/Take On Rent</a>
                 <p class="h3">Or</p>
-                <a class="btn btn-warning btn-lg">Sell/Give On Rent</a>
+                <a class="btn btn-warning btn-lg" href="sell.php">Sell/Give On Rent</a>
             </div>
         </div>
     </section>

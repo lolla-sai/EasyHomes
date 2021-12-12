@@ -1,11 +1,10 @@
 <?php
-    session_start();
+    require './register.php';
 ?>
 <?php
     if(!isset($_SESSION['messages'])) {
         $_SESSION['messages']=array();
     }
-    require './register.php';
 ?>
 <!DOCTYPE html>
 <html lang="en">

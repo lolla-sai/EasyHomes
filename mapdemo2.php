@@ -45,7 +45,7 @@
     </script>
     <!-- <script src="https://apis.mapmyindia.com/advancedmaps/api/<token/jwt key>/map_sdk_plugins"></script> -->
 
-    <script src="https://apis.mapmyindia.com/advancedmaps/api/0694a439-08ff-4ad5-8fe6-eb90e84f5c8a/map_sdk_plugins"></script>
+    <!-- <script src="https://apis.mapmyindia.com/advancedmaps/api/0694a439-08ff-4ad5-8fe6-eb90e84f5c8a/map_sdk_plugins"></script> -->
     <!-- <script src="https://apis.mapmyindia.com/advancedmaps/api/{token-OR-JWT-key}/map_sdk_plugins"></script> -->
 
     <style>

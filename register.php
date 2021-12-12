@@ -2,7 +2,7 @@
     require 'sendmail.php';
     // require 'connect_db.php';
 
-    $conn = mysqli_connect("localhost", "root", "", "easyhomessai", 3306);
+    $conn = mysqli_connect("localhost", "root", "", "easyhomes", 3306);
     if($conn->connect_error) {
         set_alert("Database Connection Failed", "danger");
         goto endpoint;
@@ -13,6 +13,7 @@
         $d = strtotime("+10 minutes");
         $expire = date("Y-m-d H:i:s", $d);
         $email=$_POST['email_id'];
+        session_start();
         $_SESSION['email'] = filter_var($_POST['email_id'], FILTER_VALIDATE_EMAIL);
         if(!$_SESSION['email']) {
             set_alert("Invalid Email Entered!", "danger");
@@ -46,6 +47,7 @@
         $result = send_mail('easyhomes878@gmail.com', 'EasyHomes', 'Dbmqpbuyhomes@788', $email, $subject, $content);
         
         if(!$result) {
+            session_destroy();
             set_alert("Error while sending Email", "danger");
             goto endpoint;
         }
@@ -58,6 +60,7 @@
 
     if(!empty($_POST['verify_otp']))
     {
+        session_start();
         if(!isset($_SESSION['email']) or !$_SESSION['email'])
         {
             set_alert("Session Dead, enter the email again", "danger");
@@ -84,7 +87,7 @@
         }
         else {
             session_destroy();
-            session_start();
+            //session_start();
             $_SESSION['messages'] = array();
             set_alert("Invalid OTP!", "danger");
             goto endpoint;
@@ -101,10 +104,11 @@
             $row=mysqli_fetch_array($getrow,MYSQLI_ASSOC);
             if(password_verify($pass,$row['password']))
             {
-                header('location:admin.php');
+                session_start();
                 $_SESSION['logged_id']=$row['user_id'];
                 $_SESSION['logged_name']=$row['name'];
                 $_SESSION['logged_email']=$row['email'];
+                header('location:admin.php');
             }
             else
             {
@@ -123,6 +127,7 @@
             }
             if($row['username']==$uname && password_verify($pass,$row['password']))
             {
+                session_start();
                 $_SESSION['logged_id']=$row['user_id'];
                 $_SESSION['logged_name']=$row['name'];
                 $username = $_SESSION['logged_name'];
@@ -130,7 +135,26 @@
                 $_SESSION['logged_username']=$row['username'];
                 $_SESSION['logged_dp'] = $row['dp'];
                 set_alert("Welcome $username", "success");
-                header('location:home.php');
+                if($_SESSION['from']=="sell")
+                {
+                    header('location:sell.php');
+                }
+                else if($_SESSION['from']=="visit")
+                {
+                    header('location:visit.php');
+                }
+                else if($_SESSION['from']=="rent")
+                {
+                    header('location:rent.php');
+                }
+                else if($_SESSION['from']=="submit")
+                {
+                    header('location:submit.php');
+                }
+                else
+                {
+                    header('location:home.php');
+                }
             }
             else if($row['username']==$uname)
             {
