@@ -1,15 +1,9 @@
 <?php
+    session_start();
     function clean_input($input) {
         return htmlspecialchars(stripslashes(trim($input)));
     }
-
-    function set_alert($messageStr, $messageTag) {
-        echo $messageStr . "<br>";
-    }
-    
-    session_start();
-
-    $conn = mysqli_connect("localhost", "root", "", "easyhomessai", 3306);
+    $conn = mysqli_connect("localhost", "root", "", "easyhomes", 3306);
     if($conn->connect_error) {
         set_alert("Database Connection Failed", "danger");
         goto endpoint;
@@ -29,7 +23,12 @@
             $flat_no = $_POST['flat_no'];
             $flat_name = $_POST['flat_name'];
         }
+
+        
         $location = clean_input($_POST['location']);
+        
+       //$num = "<script>document.write(position[0])</script>";
+       
         $description = clean_input($_POST['desc']);
         $area = clean_input($_POST['area']);
         $price = clean_input($_POST['price']);
@@ -90,7 +89,7 @@
             echo "No files selected.";
         }
         $imagesStr = implode(',', $images);
-        $sql = mysqli_query($conn, "INSERT INTO property (location, category, description, images, area, price) VALUES ('$location', '$for', '$description', '$imagesStr', $area, $price)");
+        $sql = mysqli_query($conn, "INSERT INTO property (location, category, description, images, area) VALUES ('$location', '$for', '$description', '$imagesStr', $area)");
         $last_id = mysqli_insert_id($conn);
         if(mysqli_error($conn)) {
             set_alert(mysqli_error($conn), "danger");
@@ -98,13 +97,15 @@
         if($category=='house') {
             mysqli_query($conn, "INSERT INTO house (house_no, plot_no, property_id) VALUES ($house_no, $house_plot_no, $last_id)");
             if(mysqli_error($conn)) {
-                set_alert(mysqli_error($conn), "danger");
+                //set_alert(mysqli_error($conn), "danger");
+                echo mysqli_error($conn);
             }
         }
         else if($category=='plot') {
             mysqli_query($conn, "INSERT INTO plot (plot_number, property_id) VALUES ($plot_no, $last_id)");
             if(mysqli_error($conn)) {
-                set_alert(mysqli_error($conn), "danger");
+                //set_alert(mysqli_error($conn), "danger");
+                echo mysqli_error($conn);
             }
         }
         else if($category=='flat') {
@@ -117,7 +118,6 @@
     }
     endpoint:
 ?>
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -125,6 +125,67 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Sell Property</title>
+    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBimqJizKom7LcizcvUdr-BGGq8dHEtCbE"></script>
+        <script>
+            var position = [15.496596, 73.835353];
+            
+            function initialize() { 
+                var latlng = new google.maps.LatLng(position[0], position[1]);
+                var myOptions = {
+                    zoom: 16,
+                    center: latlng,
+                    mapTypeId: google.maps.MapTypeId.ROADMAP
+                };
+                map = new google.maps.Map(document.getElementById("mapCanvas"), myOptions);
+            
+                marker = new google.maps.Marker({
+                    position: latlng,
+                    map: map,
+                    title: "Latitude:"+position[0]+" | Longitude:"+position[1]
+                });
+            
+                google.maps.event.addListener(map, 'click', function(event) {
+                    var result = [event.latLng.lat(), event.latLng.lng()];
+                    transition(result);
+                });
+            }
+            
+            //Load google map
+            google.maps.event.addDomListener(window, 'load', initialize);
+            
+            
+            var numDeltas = 100;
+            var delay = 10; //milliseconds
+            var i = 0;
+            var deltaLat;
+            var deltaLng;
+            
+            function transition(result){
+                i = 0;
+                deltaLat = (result[0] - position[0])/numDeltas;
+                deltaLng = (result[1] - position[1])/numDeltas;
+                moveMarker();
+            }
+            
+            function moveMarker(){
+                position[0] += deltaLat;
+                position[1] += deltaLng;
+                var latlng = new google.maps.LatLng(position[0], position[1]);
+                marker.setTitle("Latitude:"+position[0]+" | Longitude:"+position[1]);
+                marker.setPosition(latlng);
+                document.querySelector("#location").value=position;
+                if(i!=numDeltas){
+                    i++;
+                    setTimeout(moveMarker, delay);
+                }
+            }
+            </script>
+            <style>
+                #mapCanvas{
+                            width: 500px;
+                            height: 500px;
+                        }
+            </style>
 </head>
 <body>
     <h1>Sell/Rent A House</h1>
@@ -142,6 +203,7 @@
                 <select class="form-select" name="for" id="for">
                     <option value="sale">Sale</option>
                     <option value="rent">Rent</option>
+                    <option value="both">Sale and Rent</option>
                 </select>
             </div>
         </div>
@@ -167,6 +229,9 @@
             <label for="location" class="input-group-text">Location</label>
             <input type="text" id="location" name="location" class="form-control" placeholder="Search for a nearby place or landmark">
         </div>
+        <div id="mapCanvas">
+
+        </div>
         
         <div class="input-group mb-3">
             <input type="file" name="property_pics[]" id="property_pics" class="form-control" multiple accept=".jpg,.png,.jpeg,.gif">
@@ -180,9 +245,21 @@
                 <label for="area" class="input-group-text">Area (in sq. ft)</label>
                 <input type="number" name="area" id="area" min="10" class="form-control">
             </div>
-            <div class="input-group mb-3">
-                <label for="area" class="input-group-text">Price/Rent per month (in INR)</label>
-                <input type="number" name="price" id="price" min="10" class="form-control">
+            <div class="category_specific_details">
+                <div class="input-group mb-3" data-name="for_sale">
+                    <label for="area" class="input-group-text">Price</label>
+                    <input type="number" name="price" id="price" min="10" class="form-control">
+                </div>
+                <div class="input-group mb-3" data-name="for_rent">
+                    <label for="area" class="input-group-text">Price for Rent(Per Month)</label>
+                    <input type="number" name="rent_price" id="rprice" min="10" class="form-control">
+                </div>  
+                <!-- <div class="input-group mb-3" data-name="for_both">
+                    <label for="area" class="input-group-text">Price</label>
+                    <input type="number" name="price" id="price" min="10" class="form-control">
+                    <label for="area" class="input-group-text">Price for Rent(Per Month)</label>
+                    <input type="number" name="rent_price" id="rprice" min="10" class="form-control">
+                </div> -->
             </div>
         </div>
         <input type="submit" value="submit" name="submit">

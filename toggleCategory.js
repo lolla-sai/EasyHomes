@@ -2,6 +2,7 @@ function changeActiveInputs(e) {
     // console.log(e.target.value);
     ['house', 'flat', 'plot'].forEach(cat => {
         document.querySelector(`div[data-name='${cat}']`).style.display = 'none';
+        document.querySelector('div[]')
     });
 
     let itemToShow = document.querySelector(`div[data-name=${e.target.value}]`);
