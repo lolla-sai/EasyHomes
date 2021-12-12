@@ -1,0 +1,42 @@
+body {
+    padding: 2rem 0;
+}
+.buttons {
+    display: flex;
+    gap: 1rem;
+    justify-content: flex-start;
+}
+input[type="submit"] {
+    display: block;
+    margin: .5rem 0;
+    padding: .4rem .8rem;
+    border: 3px solid hsl(183, 83%, 53%);
+    background: hsl(183, 83%, 53%);
+    border-radius: .6rem;
+}
+input[type="submit"]:hover:not(input[disabled]) {
+    cursor: pointer;
+}
+input[type="submit"]:hover {
+    border: 3px solid hsl(183, 83%, 47%);
+    background: hsl(183, 83%, 47%);
+}
+.left {
+    display: none;
+}
+.right {
+    border-radius: 25px;
+}
+input[type="file"] {
+    font-size: 1.05rem;
+}
+
+select {
+    padding: .3rem .7rem;
+    background: transparent;
+    border: 1px solid black;
+}
+.SignUpBtn {
+    width: 100%;
+    font-size: 1.1rem;
+}
