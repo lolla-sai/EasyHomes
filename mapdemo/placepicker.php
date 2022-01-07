@@ -1,0 +1,57 @@
+<html>
+ <head>
+    <title>MapmyIndia Plugin - Place Picker</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="desciption" content="Mapmyindia Place Picker Plugin">
+    <?php
+        require './generateauth.php';
+        $token = getToken();
+        echo "<script src='https://apis.mapmyindia.com/advancedmaps/v1/$token/map_load?v=1.3'></script>";
+        echo "<script src='https://apis.mapmyindia.com/advancedmaps/api/$token/map_sdk_plugins'></script>";
+    ?>
+    <!-- <script src="https://apis.mapmyindia.com/advancedmaps/v1/<token/key>/map_load?v=1.3"></script>
+    <script src="https://apis.mapmyindia.com/advancedmaps/api/<token/jwt key>/map_sdk_plugins"></script> -->
+    <style>
+        body{margin: 0}
+        #map{
+            width: 100%; height: 100vh;margin:0;padding: 0;
+        }
+       
+    </style>
+    </head>
+    <body>
+        <div id="map"></div>
+       
+        <script>
+         /*Map Initialization*/
+          var map = new MapmyIndia.Map('map', {center: [28.62, 77.09], zoom: 15, search: false});
+          
+          /*Place Picker plugin initialization*/
+           var options={
+                map:map,
+                callback:callback_method
+               /*
+                location:{lat:28.8787,lng:77.08888},//to open that location on map on initailization
+                closeBtn:true,
+                closeBtn_callback:closeBtn_callback,
+                search:true,
+                topText:'Location Search',
+                pinImage:'pin.png', //custom pin image
+                pinHeight:40
+                */
+            };
+            var picker= new MapmyIndia.placePicker(options);
+            function callback_method(data) {
+                console.log(data);alert(JSON.stringify(data));
+             }   
+             /*methods
+              * 
+              picker.remove();
+              picker.getLocation();
+              picker.setLocation({lat:28.8787,lng:77.787877});
+              * 
+              */
+       </script>
+    </body>
+</html>
+             

@@ -1,3 +1,7 @@
+<?php
+    session_start();
+    require './components/bootstrapcss.php';
+?>
 <!DOCTYPE html>
 <html>
     <head>
@@ -18,31 +22,42 @@
                 height: 100%;
                 min-height: 100vh;
             }
-        li{
-            list-style-type: none;
-            padding: 5px;
-        }
     </style>
     <body>
-        <nav class="navbar" style="background-color: black;">
-                <ul class="navbar navbar-expand-lg">
-                    <li>
-                    <a class="navbar-brand" href="#">EasyHomes Admin</a>
-                    </li>
-                    <li class="active"><a class="card-link" href="#">Admin Home</a></li>
-                    <li><a class="card-link" href="adminusers.php">Registered Users</a></li>
-                </ul>
-                <form class="form-inline" action="#" method="POST">
-                    <button class="navbar-btn" type="submit" name="logout" value="log">
-                        <?php
-                                echo "Logout";
-                            
-                        ?>
-                    </button>
-                </form>
+    <nav class="navbar navbar-expand-lg navbar-light bg-light sticky-top">
+            <div class="container-fluid">
+                <a class="navbar-brand" href="#">
+                    <img src="./media/icons8-home-240.png" alt="Home Icon" width="30" height="24" class="d-inline-block align-text-top">
+                    EasyHomes Admin
+                </a>
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+                </button>
+                <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                    <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                        <li class="nav-item">
+                        <a class="nav-link active" aria-current="page" href="#">Admin Home</a>
+                        </li>
+                        <li class="nav-item">
+                        <a class="nav-link" href="adminusers.php">Registered Users</a>
+                        </li>
+                        <div class="dropdown profile">
+                                <div class="d-flex" data-bs-toggle="dropdown">
+                                <a class="nav-link dropdown-toggle" role="button" id="pmDropdownLink">Packers and Movers</a>
+                                </div>
+                                <ul class="dropdown-menu dropdown-menu-end">
+                                    <li><a class="dropdown-item" href="pmrequests.php">Check Requests</a></li>
+                                    <li><a class="dropdown-item" href="pmedit.php">Edit Category</a></li>
+                                </ul>
+                        </div>
+                    </ul>
+                    <form action="logout.php" method="POST">
+                        <button class="btn btn-primary" name="logout" value="logout" type="submit">Logout</button>
+                    </form>
+                </div>
+            </div>
         </nav>
         <?php
-            session_start();
             if(!empty($_POST['logout']))
             {
                 session_destroy();
@@ -51,4 +66,7 @@
 
         ?>
     </body>
+    <?php
+        require './components/bootstrapjs.php';
+    ?>
 </html>

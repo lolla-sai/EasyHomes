@@ -1,5 +1,6 @@
 <?php
     session_start();
+    require './components/bootstrapcss.php';
 ?>
 <!DOCTYPE html>
 <html>
@@ -12,16 +13,6 @@
         <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
         <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
         <style>
-            li{
-                padding: 2px;
-            }
-            li a{
-                color: yellow;
-                
-            }
-            li :hover a{
-                color: yellow;
-            }
             body{
                 background-image: url('adminbg.jpg');
                 background-size: cover;
@@ -35,41 +26,41 @@
                 flex-wrap: wrap;
                 gap: 1rem;
             }
-            .user
-            {
-                width: 300px;
-                text-align: center;
-                background-color: yellow;
-                border-radius: 2px;
-
-            }
         </style>
     </head>
-    <body alink="yellow" vlink="yellow" link="yellow">
-        <nav class="navbar" style="background-color: green;">
-                    <ul class="navbar navbar-expand-lg" style="list-style-type: none;">
-                        <li>
-                        <a class="navbar-brand" href="#">EasyHomes Admin</a>
+    <body>
+        <nav class="navbar navbar-expand-lg navbar-light bg-light sticky-top">
+            <div class="container-fluid">
+                <a class="navbar-brand" href="admin.php">
+                    <img src="./media/icons8-home-240.png" alt="Home Icon" width="30" height="24" class="d-inline-block align-text-top">
+                    EasyHomes Admin
+                </a>
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+                </button>
+                <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                    <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                        <li class="nav-item">
+                        <a class="nav-link active" aria-current="page" href="admin.php">Admin Home</a>
                         </li>
-                        <li class="active"><a class="nav-link" href="admin.php">Admin Home</a></li>
-                        <li><a class="nav-link" href="#">Registered Users</a></li>
+                        <li class="nav-item">
+                        <a class="nav-link" href="adminusers.php">Registered Users</a>
+                        </li>
+                        <div class="dropdown profile">
+                                <div class="d-flex" data-bs-toggle="dropdown">
+                                <a class="nav-link dropdown-toggle" role="button" id="pmDropdownLink">Packers and Movers</a>
+                                </div>
+                                <ul class="dropdown-menu dropdown-menu-end">
+                                    <li><a class="dropdown-item" href="pmrequests.php">Check Requests</a></li>
+                                    <li><a class="dropdown-item" href="pmedit.php">Edit Category</a></li>
+                                </ul>
+                        </div>
                     </ul>
-                    <form class="form-inline" action="#" method="POST">
-                        <button class="navbar-btn" type="submit" name="logout" value="log">
-                            <?php
-                                    echo "Logout";
-                                
-                            ?>
-                        </button>
+                    <form action="logout.php" method="POST">
+                        <button class="btn btn-primary" name="logout" value="logout" type="submit">Logout</button>
                     </form>
-                    <?php
-                        if(!empty($_POST['logout']))
-                        {
-                            session_destroy();
-                            header('location:home.php');
-                        }
-
-                    ?>
+                </div>
+            </div>
         </nav>
         <?php
             $servername = "localhost";
@@ -78,7 +69,7 @@
             $dbname = "easyhomes";
             $connection = mysqli_connect("localhost", "root", "", "easyhomes");
 
-            $select=mysqli_query($connection,"SELECT * FROM `user`");
+            $select=mysqli_query($connection,"SELECT * FROM `users`");
             $rows=mysqli_num_rows($select);
             if($rows>0)
             {
@@ -89,24 +80,35 @@
                         while ($row = $select->fetch_assoc()) 
                         {
                             ?>
-                                    <div class="user">
-                                        <h1>
-                                            <?php
-                                                echo $row['fname']." ".$row['mname']." ".$row['lname']."<br>";
-                                            ?>
-                                        </h1>
-                                        <p>
+                                    <div class="card text-white bg-info mb-3" style="width: 18rem;">
+                                    <img class="card-img-top" src="<?php echo $row['dp'] ?>" alt="Profile Picture" width="100%" height="200px">
+                                    <div class="card-body">
+                                        <h5 class="card-title"><?php echo $row['name']; ?></h5>
+                                        <p class="card-text">
                                             <?php
                                                 echo "User ID: ".$row['user_id']."<br>";
-                                                echo "Email ID: ".$row['email_id']."<br>";
+                                                echo "Email ID: ".$row['email']."<br>";
                                                 echo "Username: ".$row['username']."<br>";
                                                 echo "Phone Number: ".$row['phone_number']."<br>";
-                                                echo "Gender: ".$row['gender']."<br>";
+                                                echo "Gender: ";
+                                                if($row['gender']==1)
+                                                {
+                                                    echo "Male";
+                                                }
+                                                else if($row['gender']==2)
+                                                {
+                                                    echo "Female";
+                                                }
+                                                else
+                                                {
+                                                    echo "NA";
+                                                }
+                                                echo "<br>";
                                                 echo "Age: ".$row['age']."<br>";
                                             ?>
                                         </p>
                                     </div>
-                                    
+                                    </div>
                                     <?php
                         }
                         ?>
@@ -124,4 +126,7 @@
             }
         ?>
     </body>
+    <?php
+        require './components/bootstrapjs.php';
+    ?>
 </html>

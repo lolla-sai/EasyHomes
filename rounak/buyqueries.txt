@@ -1,0 +1,33 @@
+1) Price Range
+
+SELECT * from property WHERE property_id IN (SELECT property_id FROM sale_price WHERE price IN BETWEEN 20000 AND 30000)
+											    >20000
+											    <20000
+
+2) Category (Sale/Rent)
+
+SELECT * from property WHERE category='sale'
+SELECT * from property WHERE category='rent'  
+
+3) Type (Plot/Land/House)
+
+SELECT * from property WHERE property_id IN (SELECT property_id FROM flat)
+SELECT * from property WHERE property_id IN (SELECT property_id FROM house)
+SELECT * from property WHERE property_id IN (SELECT property_id FROM plot)
+
+4) Area 
+
+SELECT * from property WHERE area=80 or area>80 or area<80 
+
+5) Location
+
+	15.45
+Panjim: 15.492323, 77.232342
+        15.53     77.38
+
+SELECT * from property WHERE latitude IN BETWEEN(15.45,15.53) AND 
+
+
+
+
+

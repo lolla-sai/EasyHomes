@@ -1,8 +1,6 @@
 <?php
-    session_start();
     require 'sendmail.php';
-    require './components/setAlertFn.php';
-    require './components/runSQLQuery.php';
+    // require 'connect_db.php';
 
     $conn = mysqli_connect("localhost", "root", "", "easyhomes", 3306);
     if($conn->connect_error) {
@@ -15,7 +13,7 @@
         $d = strtotime("+10 minutes");
         $expire = date("Y-m-d H:i:s", $d);
         $email=$_POST['email_id'];
-
+        session_start();
         $_SESSION['email'] = filter_var($_POST['email_id'], FILTER_VALIDATE_EMAIL);
         if(!$_SESSION['email']) {
             set_alert("Invalid Email Entered!", "danger");
@@ -62,6 +60,7 @@
 
     if(!empty($_POST['verify_otp']))
     {
+        session_start();
         if(!isset($_SESSION['email']) or !$_SESSION['email'])
         {
             set_alert("Session Dead, enter the email again", "danger");
@@ -88,7 +87,7 @@
         }
         else {
             session_destroy();
-            session_start();
+            //session_start();
             $_SESSION['messages'] = array();
             set_alert("Invalid OTP!", "danger");
             goto endpoint;
@@ -105,6 +104,7 @@
             $row=mysqli_fetch_array($getrow,MYSQLI_ASSOC);
             if(password_verify($pass,$row['password']))
             {
+                session_start();
                 $_SESSION['logged_id']=$row['user_id'];
                 $_SESSION['logged_name']=$row['name'];
                 $_SESSION['logged_email']=$row['email'];
@@ -127,6 +127,7 @@
             }
             if($row['username']==$uname && password_verify($pass,$row['password']))
             {
+                session_start();
                 $_SESSION['logged_id']=$row['user_id'];
                 $_SESSION['logged_name']=$row['name'];
                 $username = $_SESSION['logged_name'];
@@ -154,13 +155,7 @@
                     }
                     else if($_SESSION['from']=="pmc")
                     {
-                        header('location:pmcategoryform.php');
-                    }
-                    else if($_SESSION['from'] == "details") {
-                        header("location:details.php");
-                    }
-                    else if($_SESSION['from'] == "property") {
-                        header("location:property.php");
+                        header('location:pmcategory.php');
                     }
                     else
                     {

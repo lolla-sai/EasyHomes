@@ -6,26 +6,21 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
-    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
-    <style>
-    </style>
+    <?php
+        require './components/bootstrapcss.php';
+    ?>
 </head>
 <body class="d-flex justify-content-center align-items-center" style="min-height: 100vh; background: #41dae1;">
     <?php
         require './sendmail.php';
+        require './components/setAlertFn.php';
+        require './components/cleanInputFn.php';
 
         $servername = "localhost";
         $username = "root";
         $password = "";
         $dbname = "easyhomes";
         $conn = mysqli_connect($servername, $username, $password, $dbname, 3306);
-
-        function clean_input($input) {
-            return htmlspecialchars(stripslashes(trim($input)));
-        }
 
         if(!isset($_SESSION['email'])) {
             set_alert("Invalid session. Go back to login page", "danger");
@@ -42,7 +37,7 @@
             $phno = htmlspecialchars($_POST['phno']??"");
             $gender = htmlspecialchars($_POST['gender']);
             $email = $_SESSION['email'];
-
+            
             $sql = mysqli_query($conn, "SELECT * from users WHERE username='$uname'");
             if(mysqli_error($conn)) {
                 set_alert(mysqli_error($conn), "danger");
@@ -54,7 +49,7 @@
                     goto endpoint;
                 }
             }
-
+            
             if($_POST['password1'] !== $_POST['password2']) {
                 set_alert("Passwords do not match!", "danger");
                 goto endpoint;
@@ -64,21 +59,21 @@
             $lowercase = preg_match('@[a-z]@', $password);
             $number    = preg_match('@[0-9]@', $password);
             $specialChars = preg_match('@[^\w]@', $password);
-
+            
             if(!$uppercase || !$lowercase || !$number || !$specialChars || strlen($password) < 8) {
                 set_alert('Password should be at least 8 characters in length and should include at least one upper case letter, one number, and one special character', 'danger');
                 goto endpoint;
             }
             $password =  password_hash($_POST['password1'], PASSWORD_DEFAULT);
-
+            
             $dp_provided = true;
-
+            
             if(!$_FILES["dp"]["tmp_name"]) {
                 // set_alert('Blank File Name', 'danger');
                 $target_file = 'media/default.jpg';
                 $dp_provided = false;
             }
-
+            
             if($dp_provided and !is_dir("media/$uname/")) {
                 if(!mkdir("media/$uname/")) {
                     set_alert("Invalid username", "danger");
@@ -216,6 +211,10 @@
             return true;
         }
     </script>
+
+    <?php
+        require './components/bootstrapjs.php';
+    ?>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-ka7Sk0Gln4gmtz2MlQnikT1wXgYsOg+OMhuP+IlRH9sENBO0LRn5q+8nbTov4+1p" crossorigin="anonymous"></script>
     <script
