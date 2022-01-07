@@ -21,10 +21,9 @@ The entire website is built in HTML5, CSS3, JS (ES6), and PHP7 backend.
 While working on the project, we learnt how sessions, auth, databases and in general, how websites we see and use day in and day out, work.
 
 ### Website Link
-You can find the website at https://lnkd.in/d-ecaAfd
+You can find the website at https://easyhomes.000webhostapp.com/
 
 ### Side Notes
 * While checking the website, you may get a 500 server error. This is because we are using the free tier of 000webhost which limits the bandwidth to 300mb among various other restrictions. It is not an error of the website, and can be fixed by reloading the website.
-* Do check out the attached pics for a quick glance over the website.
 
 #tech #team #project #phpmysql #learning
