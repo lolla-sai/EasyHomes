@@ -86,7 +86,7 @@
                                         <h5 class="card-title"><?php echo $row['name']; ?></h5>
                                         <p class="card-text">
                                             <?php
-                                                echo "User ID: ".$row['user_id']."<br>";
+                                                echo "User ID : ".$row['user_id']."<br>";
                                                 echo "Email ID: ".$row['email']."<br>";
                                                 echo "Username: ".$row['username']."<br>";
                                                 echo "Phone Number: ".$row['phone_number']."<br>";
